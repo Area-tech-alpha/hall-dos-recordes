@@ -9,16 +9,27 @@ const COVER_GRID: Record<number, string> = {
   4: "grid-cols-2 grid-rows-2",
 };
 
-// Largura de cada foto da capa: largura do card (4/3/2/1 colunas) dividida pelas colunas da capa.
-const coverSizes = (cols: number) =>
-  [
-    `(min-width: 1600px) and (min-height: 800px) ${Math.ceil(15 / cols)}vw`,
-    `(min-width: 1024px) ${Math.ceil(34 / cols)}vw`,
-    `(min-width: 640px) ${Math.ceil(50 / cols)}vw`,
-    `${Math.ceil(100 / cols)}vw`,
-  ].join(", ");
+// Largura de cada foto da capa: largura do card dividida pelas colunas da capa.
+// TV: 7 colunas. Computador/celular: 4/3/2/1 colunas conforme a largura.
+const coverSizes = (cols: number, tv: boolean) =>
+  tv
+    ? `${Math.ceil(15 / cols)}vw`
+    : [
+        `(min-width: 1920px) ${Math.ceil(25 / cols)}vw`,
+        `(min-width: 1024px) ${Math.ceil(34 / cols)}vw`,
+        `(min-width: 640px) ${Math.ceil(50 / cols)}vw`,
+        `${Math.ceil(100 / cols)}vw`,
+      ].join(", ");
 
-export function RecordCard({ recorde, recordistas }: { recorde: Recorde; recordistas: Recordista[] }) {
+export function RecordCard({
+  recorde,
+  recordistas,
+  tv = false,
+}: {
+  recorde: Recorde;
+  recordistas: Recordista[];
+  tv?: boolean;
+}) {
   const pessoas = participantes(recorde).flatMap((part) => {
     const pessoa = recordistas.find((r) => r.id === part.recordistaId);
     return pessoa ? [{ ...pessoa, area: part.area }] : [];
@@ -27,7 +38,7 @@ export function RecordCard({ recorde, recordistas }: { recorde: Recorde; recordi
   const alt = pessoas.map((p) => p.nome).join(", ");
 
   return (
-    <article className="@container flex flex-col overflow-hidden rounded-[1.15rem] border border-line bg-card tv:min-h-0 tv:rounded-[0.9rem]">
+    <article className="@container flex flex-col overflow-hidden rounded-[1.15rem] border border-line bg-card max-sm:snap-start max-sm:scroll-mt-5 tv:min-h-0 tv:rounded-[0.9rem]">
       {/* No modo TV a foto ocupa o espaço que sobrar no card (altura fixa da grade) */}
       <div className={`relative grid aspect-[16/11] bg-[#0b0906] tv:aspect-auto tv:min-h-0 tv:flex-1 ${COVER_GRID[capas.length] ?? ""}`}>
         {capas.map((src, i) => (
@@ -36,7 +47,7 @@ export function RecordCard({ recorde, recordistas }: { recorde: Recorde; recordi
               src={src}
               alt={i === 0 ? alt : ""}
               fill
-              sizes={coverSizes(capas.length === 3 ? 3 : capas.length > 1 ? 2 : 1)}
+              sizes={coverSizes(capas.length === 3 ? 3 : capas.length > 1 ? 2 : 1, tv)}
               className="object-cover object-[center_30%]"
             />
           </div>

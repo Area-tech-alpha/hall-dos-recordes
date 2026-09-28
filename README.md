@@ -39,14 +39,19 @@ Substitua o arquivo **mantendo o mesmo nome** (ex.: `public/images/italo-silva.j
 Para um arquivo novo, coloque em `public/images/` e aponte o caminho `/images/nome.jpg` em `foto` ou `imagem`.
 Prefira fotos quadradas ou 16:11 de ~1000px; o `next/image` gera versões otimizadas.
 
-## TV 55"
+## Telas
 
-- Em telas a partir de 1600×800 (TV 55" em 1080p/4K ou monitor em tela cheia) a página vira um quadro 16:9 fixo,
-  sem rolagem: 19 recordes em grade 7×3 e recordistas no topo. Tudo escala com a tela.
-- **Na TV, abra sempre com `?tv`** (ex.: `https://…vercel.app/?tv`). Isso força o quadro de TV e esconde o cursor.
-  Navegadores de smart TV costumam informar uma tela de 1280×720 ou 960×540 mesmo em TVs 4K, e sem o `?tv`
-  a página cairia no layout de notebook, com rolagem.
-- A grade tem sempre 3 linhas; as colunas se ajustam sozinhas à quantidade de recordes (19 → 7 colunas).
+São duas rotas. O layout de TV **não** depende do tamanho da tela, porque computador e TV costumam ter a mesma
+resolução (1920×1080).
+
+- **`/`: computador e celular.**
+  - Computador: grade com rolagem, 2 a 4 colunas (4 a partir de 1920px), com cabeçalho e descrição nos cards.
+    Acima de 1600px tudo escala com a tela.
+  - Celular (até 640px): 1 card por linha, e a rolagem encaixa card a card. Os recordistas ficam numa faixa
+    que arrasta para o lado.
+- **`/tv`: TV 55"** (ex.: `https://…vercel.app/tv`). Quadro 16:9 fixo, sem rolagem e sem cursor, em 1080p e 4K.
+  Grade 7×3, que comporta até 21 recordes. Acima disso as colunas aumentam sozinhas (sempre 3 linhas),
+  mas os cards ficam mais estreitos.
 
 ## Fase 2
 
