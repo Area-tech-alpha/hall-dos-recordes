@@ -13,17 +13,9 @@
   --font-sans: var(--font-outfit), system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 }
 
-/* Modo TV: tela grande e alta (TV 55" em 1080p ou 4K, ou monitor em tela cheia).
-   A página vira um quadro 16:9 fixo, sem rolagem. ?tv na URL força o modo TV
-   (navegadores de smart TV costumam informar viewport de 1280x720 ou 960x540). */
-@custom-variant tv {
-  @media (min-width: 1600px) and (min-height: 800px) {
-    @slot;
-  }
-  &:where(html.tv *) {
-    @slot;
-  }
-}
+/* Modo TV: rota /tv (html.tv). A página vira um quadro 16:9 fixo, sem rolagem.
+   Computador e celular usam "/" normalmente. */
+@custom-variant tv (&:where(.tv, .tv *));
 
 /* Tudo (fontes e espaçamentos do Tailwind) está em rem. Acima de 1600px a base
    passa a acompanhar a largura da tela, então a página escala inteira e mantém
@@ -37,21 +29,21 @@ html {
     font-size: clamp(16px, 1vw, 48px);
   }
 }
-/* No modo TV o quadro tem 100rem x 56.25rem (16:9). 1rem = o menor entre
-   1% da largura e 1/56.25 da altura, então ele sempre cabe inteiro na tela. */
-@media (min-width: 1600px) and (min-height: 800px) {
+/* Celular: a rolagem "encaixa" card por card */
+@media (max-width: 639px) {
   html {
-    font-size: min(1vw, 1.7778vh);
-  }
-  body {
-    overflow: hidden;
+    scroll-snap-type: y proximity;
   }
 }
+/* TV: o quadro tem 100rem x 56.25rem (16:9). 1rem = o menor entre 1% da
+   largura e 1/56.25 da altura, então ele sempre cabe inteiro na tela. */
 html.tv {
   font-size: min(1vw, 1.7778vh);
+  scroll-snap-type: none;
 }
 html.tv body {
   overflow: hidden;
+  cursor: none;
 }
 
 body {
@@ -67,10 +59,4 @@ body {
     width: min(100% - 2.5rem, 89rem);
     margin-inline: auto;
   }
-}
-
-/* ?tv também esconde o cursor */
-html.tv,
-html.tv body {
-  cursor: none;
 }
