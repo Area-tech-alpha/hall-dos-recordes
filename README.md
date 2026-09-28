@@ -41,8 +41,10 @@ Prefira fotos quadradas ou 16:11 de ~1000px; o `next/image` gera versões otimiz
 
 ## TV 55"
 
-- Acima de 1600px de largura, a página inteira escala com a tela (1080p e 4K) e o grid passa a ter 4 colunas a partir de 1920px.
-- Abra com `?tv` para rolagem automática em loop, sem cursor (`?tv=2` rola 2x mais rápido).
+- Em telas a partir de 1600×800 (TV 55" em 1080p/4K ou monitor em tela cheia) a página vira um quadro 16:9 fixo,
+  sem rolagem: 19 recordes em grade 7×3 e recordistas no topo. Tudo escala com a tela.
+- Abra com `?tv` para esconder o cursor.
+- Com mais de 21 recordes a grade de TV não fecha: ajuste `tv:grid-cols-*` / `tv:grid-rows-*` em `app/page.tsx`.
 
 ## Fase 2
 

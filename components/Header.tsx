@@ -1,7 +1,7 @@
 /** Só a logo. Navegação e badge ADM ficam para a área admin (Fase 2). */
 export function Header() {
   return (
-    <header className="border-b border-white/6 bg-bg/90">
+    <header className="border-b border-white/6 bg-bg/90 tv:hidden">
       <div className="wrap flex min-h-18 items-center">
         <div className="flex items-center gap-3">
           <span
