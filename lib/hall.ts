@@ -1,6 +1,7 @@
 import "server-only";
 import { z } from "zod";
 import type { Recorde, Recordista } from "@/data/records";
+import { recordesLocais, recordistasLocais } from "@/data/records-local";
 
 export type HallData = {
   recordes: Recorde[];
@@ -44,24 +45,25 @@ const RespostaHall = z.object({
   ),
 });
 
-const VAZIO: HallData = { recordes: [], recordistas: [] };
+// Recordes e fotos locais (public/images): usados sem o ERP configurado e como reserva se ele falhar.
+const LOCAL: HallData = montar({ recordes: recordesLocais, recordistas: recordistasLocais });
 
-// Último retorno válido desta instância: se o ERP cair por um instante, a LP e a TV
-// continuam com os recordes em vez de trocar pelo estado vazio.
+// Último retorno válido do ERP nesta instância: se ele cair por um instante, a LP e a TV
+// continuam com os dados dele em vez de voltar para os locais.
 let ultimoValido: HallData | null = null;
 
 /**
  * Único ponto de leitura de dados da LP (/ e /tv): busca no ERP e devolve o mesmo formato de sempre,
- * então páginas e componentes não mudam. Nunca lança erro: se a API falhar ou vier inválida,
- * registra no log e devolve o último retorno válido (ou vazio, e a página mostra "Recordes indisponíveis").
+ * então páginas e componentes não mudam. Nunca lança erro. Prioridade:
+ *   1. ERP (ERP_API_URL + HALL_API_KEY configuradas e resposta válida)
+ *   2. último retorno válido do ERP nesta instância
+ *   3. recordes locais (data/records-local.ts + public/images)
+ * Só mostra "Recordes indisponíveis" se nenhum dos três tiver recordes.
  */
 export async function getHallData(): Promise<HallData> {
   const base = process.env.ERP_API_URL;
   const chave = process.env.HALL_API_KEY;
-  if (!base || !chave) {
-    console.error("[hall] ERP_API_URL ou HALL_API_KEY não configuradas.");
-    return ultimoValido ?? VAZIO;
-  }
+  if (!base || !chave) return LOCAL; // ERP ainda não configurado: recordes locais
 
   try {
     const res = await fetch(`${base.replace(/\/+$/, "")}/public/growth-academy/hall`, {
@@ -80,12 +82,12 @@ export async function getHallData(): Promise<HallData> {
     return ultimoValido;
   } catch (e) {
     console.error("[hall] Falha ao buscar recordes no ERP:", e instanceof Error ? e.message : e);
-    return ultimoValido ?? VAZIO;
+    return ultimoValido ?? LOCAL;
   }
 }
 
 /** ×N calculado pelas participações; só entra na faixa quem tem recorde. */
-function montar({ recordes, recordistas }: z.output<typeof RespostaHall>): HallData {
+function montar({ recordes, recordistas }: { recordes: Recorde[]; recordistas: Omit<Recordista, "qtdRecordes">[] }): HallData {
   const qtd = new Map<string, number>();
   for (const r of recordes) {
     for (const id of [r.recordistaId, ...(r.coRecordistas ?? []).map((c) => c.recordistaId)]) {

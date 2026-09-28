@@ -15,9 +15,11 @@ login nem edição: ela só consome a API do ERP.
 - `getHallData()` em `lib/hall.ts` busca `GET ${ERP_API_URL}/public/growth-academy/hall` com o header
   `x-api-key: HALL_API_KEY`. A chave fica só no servidor e nunca vai para o navegador.
 - A resposta é validada com Zod. Se a API cair ou responder fora do formato, o erro vai para o log da Vercel e
-  a página continua no ar:
-  - se esta instância já tinha dados válidos, continua mostrando esses;
-  - senão, mostra "Recordes indisponíveis no momento".
+  a página continua no ar com o último retorno válido do ERP ou, na falta dele, com os recordes locais.
+- **Recordes locais** (`data/records-local.ts` + fotos em `public/images/`): são os 19 recordes da Fase 1. A LP
+  usa esses dados enquanto `ERP_API_URL`/`HALL_API_KEY` não estiverem configuradas e como reserva se o ERP falhar.
+  Quando o ERP estiver no ar, os dados dele têm prioridade. "Recordes indisponíveis no momento" só aparece se
+  não houver recorde em nenhuma das fontes.
 - Cache de 60s (tag `hall`): uma alteração no ERP aparece em até 1 minuto, ou na hora se o ERP chamar o
   `/api/revalidate` (abaixo).
 - A `/tv` busca os dados de novo a cada 5 minutos, sem recarregar a página.
@@ -79,7 +81,7 @@ npm run dev        # http://localhost:3000
 npm run build      # build de produção (o mesmo que a Vercel roda)
 ```
 
-Sem a API configurada ou acessível, a LP sobe mesmo assim e mostra o estado "Recordes indisponíveis".
+Sem a API configurada ou acessível, a LP sobe mesmo assim, com os recordes locais.
 
 ## Telas
 
