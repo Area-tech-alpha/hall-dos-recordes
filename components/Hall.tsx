@@ -1,6 +1,7 @@
 import { Header } from "@/components/Header";
 import { HolderStrip } from "@/components/HolderStrip";
 import { RecordCard } from "@/components/RecordCard";
+import { SemRecordes } from "@/components/SemRecordes";
 import { TvCarousel } from "@/components/TvCarousel";
 import { getHallData } from "@/lib/hall";
 
@@ -20,10 +21,12 @@ export async function Hall({ tv = false }: { tv?: boolean }) {
           <p className="mt-3.5 max-w-[38rem] text-[1.1rem] text-muted tv:mt-2">
             Quem quebrou recorde no comercial da Alpha. O próximo nome aqui pode ser o seu.
           </p>
-          <HolderStrip recordistas={recordistas} />
+          {recordistas.length > 0 && <HolderStrip recordistas={recordistas} />}
         </section>
 
-        {tv ? (
+        {recordes.length === 0 ? (
+          <SemRecordes />
+        ) : tv ? (
           <section aria-label="Recordes" className="flex min-h-0 flex-1 flex-col">
             <TvCarousel recordes={recordes} recordistas={recordistas} />
           </section>

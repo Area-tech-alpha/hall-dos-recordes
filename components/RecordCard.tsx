@@ -1,5 +1,11 @@
 import Image from "next/image";
-import { participantes, type Recorde, type Recordista } from "@/data/records";
+import type { Participacao, Recorde, Recordista } from "@/data/records";
+
+/** Recordista principal + coRecordistas, na ordem do card. */
+const participantes = (r: Recorde): Participacao[] => [
+  { recordistaId: r.recordistaId, area: r.area },
+  ...(r.coRecordistas ?? []),
+];
 
 // Layout da capa conforme o nº de fotos (igual aos prints: 1, 2 lado a lado, 4 em grade).
 const COVER_GRID: Record<number, string> = {
