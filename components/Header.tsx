@@ -1,19 +1,13 @@
-/** Só a logo. Navegação e badge ADM ficam para a área admin (Fase 2). */
+import Image from "next/image";
+
+/** Logo da Alpha + Growth Academy. Aparece em /, no celular e na /tv. */
 export function Header() {
   return (
-    <header className="border-b border-white/6 bg-bg/90 tv:hidden">
+    <header className="border-b border-white/6 bg-bg/90 tv:shrink-0">
       <div className="wrap flex min-h-18 items-center">
-        <div className="flex items-center gap-3">
-          <span
-            aria-hidden="true"
-            className="flex h-11 items-center gap-1 rounded-lg border border-line bg-linear-135 from-[#2a1f0c] to-[#120d06] px-2.5 text-gold"
-          >
-            <span className="text-[0.8rem] font-bold tracking-tight text-ink">alpha</span>
-            <svg viewBox="0 0 40 40" className="size-7">
-              <path d="M9 6l24 14L9 34z" fill="none" stroke="currentColor" strokeWidth="3.2" strokeLinejoin="round" />
-              <path d="M15 14l10 6-10 6z" fill="currentColor" />
-            </svg>
-          </span>
+        <div className="flex items-center gap-4">
+          <Image src="/logo-alpha.png" alt="Alpha" width={720} height={205} priority className="h-8 w-auto sm:h-9" />
+          <span aria-hidden="true" className="h-9 w-px bg-white/12" />
           <span className="flex flex-col leading-tight">
             <strong className="text-xl font-bold">
               Growth <span className="text-gold">Academy</span>

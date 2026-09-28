@@ -1,28 +1,26 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { RecordCard } from "@/components/RecordCard";
 import type { Recorde, Recordista } from "@/data/records";
 
 const VISIVEIS = 3;
 const PASSO_MS = 5000;
-const ANIMACAO_MS = 700; // igual ao duration-700 da trilha
+const VOLTA_MS = 750; // um pouco mais que a transição (700ms)
 
 /**
- * Carrossel automático da /tv: 3 cards visíveis, avança 1 card a cada 5s.
- * Loop sem pulo: os 3 primeiros cards são repetidos no fim da trilha; ao chegar
- * neles, a posição volta para 0 sem transição (visualmente é o mesmo quadro).
+ * Carrossel da /tv: 3 cards visíveis, avança 1 a cada 5s, em loop infinito sem pulo.
+ * Os 3 primeiros cards são repetidos no fim; ao chegar neles, volta para 0 sem transição
+ * (visualmente é o mesmo quadro) e religa a transição dois frames depois.
  */
 export function TvCarousel({ recordes, recordistas }: { recordes: Recorde[]; recordistas: Recordista[] }) {
-  const n = recordes.length;
-  const anda = n > VISIVEIS;
-  const trilha = anda ? [...recordes, ...recordes.slice(0, VISIVEIS)] : recordes;
+  const total = recordes.length;
+  const anda = total > VISIVEIS;
+  const slides = anda ? [...recordes, ...recordes.slice(0, VISIVEIS)] : recordes;
 
-  const [pos, setPos] = useState(0);
-  const [semAnimacao, setSemAnimacao] = useState(false);
+  const [i, setI] = useState(0);
+  const [animar, setAnimar] = useState(true);
   const [reduzido, setReduzido] = useState(false);
-  const posRef = useRef(0);
-  posRef.current = pos;
 
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -34,63 +32,68 @@ export function TvCarousel({ recordes, recordistas }: { recordes: Recorde[]; rec
 
   useEffect(() => {
     if (!anda) return;
-    const id = setInterval(() => {
-      const atual = posRef.current;
-      // Sem animação (reduced motion) ou ainda nos clones do fim: troca direto.
-      if (reduzido || atual >= n) {
-        setSemAnimacao(true);
-        setPos(atual >= n ? 0 : (atual + 1) % n);
-      } else {
-        setSemAnimacao(false);
-        setPos(atual + 1);
-      }
+    const t = setInterval(() => {
+      // Garante a transição ligada mesmo se o rAF da volta não rodou (aba em segundo plano pausa o rAF)
+      setAnimar(true);
+      setI((x) => x + 1);
     }, PASSO_MS);
-    return () => clearInterval(id);
-  }, [anda, n, reduzido]);
+    return () => clearInterval(t);
+  }, [anda]);
 
-  // Chegou nos clones do fim: quando a animação termina, volta para 0 sem transição.
+  // Chegou nas cópias do fim: volta ao início sem transição
   useEffect(() => {
-    if (pos < n) return;
-    const id = setTimeout(() => {
-      setSemAnimacao(true);
-      setPos(0);
-    }, ANIMACAO_MS);
-    return () => clearTimeout(id);
-  }, [pos, n]);
+    if (!anda || i < total) return;
+    let raf = 0;
+    const t = setTimeout(
+      () => {
+        setAnimar(false);
+        setI(0);
+        raf = requestAnimationFrame(() => {
+          raf = requestAnimationFrame(() => setAnimar(true));
+        });
+      },
+      reduzido ? 0 : VOLTA_MS,
+    );
+    return () => {
+      clearTimeout(t);
+      cancelAnimationFrame(raf);
+    };
+  }, [i, total, anda, reduzido]);
 
-  const ativo = n ? pos % n : 0;
+  const ativo = total ? i % total : 0;
 
   return (
-    <section aria-label="Recordes" className="flex min-h-0 flex-1 flex-col">
+    <div className="flex min-h-0 flex-1 flex-col">
       <div className="min-h-0 flex-1 overflow-hidden">
-        <div
-          style={{ transform: `translateX(calc(${-pos} * (100% + var(--gap)) / ${VISIVEIS}))` }}
-          className={`flex h-full gap-(--gap) [--gap:1.75rem] ${
-            semAnimacao ? "" : "transition-transform duration-700 ease-in-out"
-          }`}
+        <ul
+          className="flex h-full gap-6"
+          style={{
+            transform: `translateX(calc(${-i} * (100% + 1.5rem) / ${VISIVEIS}))`,
+            transition: animar && !reduzido ? "transform 700ms ease-in-out" : "none",
+          }}
         >
-          {trilha.map((r, i) => (
-            <div
-              key={`${r.id}-${i}`}
-              aria-hidden={i >= n || undefined}
-              className="h-full shrink-0 basis-[calc((100%-2*var(--gap))/3)]"
+          {slides.map((r, k) => (
+            <li
+              key={`${r.id}-${k}`}
+              aria-hidden={k >= total || undefined}
+              className="h-full shrink-0 basis-[calc((100%-3rem)/3)]"
             >
               <RecordCard recorde={r} recordistas={recordistas} tv />
-            </div>
+            </li>
           ))}
-        </div>
+        </ul>
       </div>
 
       {anda && (
         <div aria-hidden="true" className="mt-5 flex shrink-0 justify-center gap-2">
-          {recordes.map((r, i) => (
+          {recordes.map((r, k) => (
             <span
               key={r.id}
-              className={`h-2 rounded-full transition-all duration-500 ${i === ativo ? "w-7 bg-gold" : "w-2 bg-white/20"}`}
+              className={`h-1.5 rounded-full transition-all duration-500 ${k === ativo ? "w-8 bg-gold" : "w-1.5 bg-white/20"}`}
             />
           ))}
         </div>
       )}
-    </section>
+    </div>
   );
 }
