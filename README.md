@@ -41,8 +41,12 @@ Prefira fotos quadradas ou 16:11 de ~1000px; o `next/image` gera versões otimiz
 
 ## TV 55"
 
-- Acima de 1600px de largura, a página inteira escala com a tela (1080p e 4K) e o grid passa a ter 4 colunas a partir de 1920px.
-- Abra com `?tv` para rolagem automática em loop, sem cursor (`?tv=2` rola 2x mais rápido).
+- Em telas a partir de 1600×800 (TV 55" em 1080p/4K ou monitor em tela cheia) a página vira um quadro 16:9 fixo,
+  sem rolagem: 19 recordes em grade 7×3 e recordistas no topo. Tudo escala com a tela.
+- **Na TV, abra sempre com `?tv`** (ex.: `https://…vercel.app/?tv`). Isso força o quadro de TV e esconde o cursor.
+  Navegadores de smart TV costumam informar uma tela de 1280×720 ou 960×540 mesmo em TVs 4K, e sem o `?tv`
+  a página cairia no layout de notebook, com rolagem.
+- A grade tem sempre 3 linhas; as colunas se ajustam sozinhas à quantidade de recordes (19 → 7 colunas).
 
 ## Fase 2
 
