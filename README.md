@@ -39,17 +39,21 @@ Substitua o arquivo **mantendo o mesmo nome** (ex.: `public/images/italo-silva.j
 Para um arquivo novo, coloque em `public/images/` e aponte o caminho `/images/nome.jpg` em `foto` ou `imagem`.
 Prefira fotos quadradas ou 16:11 de ~1000px; o `next/image` gera versões otimizadas.
 
-## Layouts: celular, computador e TV
+## Telas
 
-- **Celular** (até 640px): um card por linha, rolando com o dedo.
-- **Computador**: grade de 2 a 4 colunas, rolando (4 colunas a partir de 1920px). Acima de 1600px tudo escala com a tela.
-- **TV 55"**: quadro 16:9 fixo, sem rolagem. Recordistas no topo e todos os recordes em 3 linhas; as colunas
-  se ajustam sozinhas à quantidade de recordes (19 → 7 colunas). Sem cursor.
+São duas rotas. O layout de TV **não** depende do tamanho da tela, porque computador e TV costumam ter a mesma
+resolução (1920×1080).
 
-O modo TV **não** depende do tamanho da tela (senão um monitor Full HD cairia nele). Ele liga:
-- sozinho, em navegador de smart TV (Samsung/Tizen, LG/webOS, Android TV, Fire TV, Roku…);
-- ou com `?tv` na URL (ex.: `https://…vercel.app/?tv`). Use isso quando a TV estiver ligada num
-  computador, TV box ou Chromecast. `?tv=0` desliga.
+- **`/`: computador e celular.**
+  - Computador: grade com rolagem, 2 a 4 colunas (4 a partir de 1920px), com cabeçalho e descrição nos cards.
+    Acima de 1600px tudo escala com a tela.
+  - Celular (até 640px): 1 card por linha, e a rolagem encaixa card a card. Os recordistas ficam numa faixa
+    que arrasta para o lado.
+- **`/tv`: TV 55"** (ex.: `https://…vercel.app/tv`). Quadro 16:9 fixo, sem rolagem e sem cursor, em 1080p e 4K.
+  No topo, o título e os recordistas. Embaixo, um carrossel automático com 3 cards visíveis que avança 1 card
+  a cada 5s e volta ao início sem pulo. Os cards são os mesmos do computador, maiores e com descrição.
+  Funciona com qualquer quantidade de recordes; com 3 ou menos, os cards ficam parados.
+  Com "reduzir movimento" ativado no sistema, a troca acontece sem animação.
 
 ## Fase 2
 

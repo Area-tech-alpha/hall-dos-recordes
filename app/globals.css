@@ -13,13 +13,9 @@
   --font-sans: var(--font-outfit), system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 }
 
-/* Três layouts:
-   - celular (< 640px): 1 card por linha, rolando;
-   - computador: grade de 2 a 4 colunas, rolando (4 colunas a partir de 1920px);
-   - TV (html.tv): quadro 16:9 fixo, sem rolagem. Ligado pelo script em app/layout.tsx
-     quando o navegador é de smart TV ou a URL tem ?tv. Não depende do tamanho da tela,
-     para um monitor Full HD de computador não cair no layout de TV. */
-@custom-variant tv (&:where(html.tv *));
+/* Modo TV: rota /tv (html.tv). A página vira um quadro 16:9 fixo, sem rolagem.
+   Computador e celular usam "/" normalmente. */
+@custom-variant tv (&:where(.tv, .tv *));
 
 /* Tudo (fontes e espaçamentos do Tailwind) está em rem. Acima de 1600px a base
    passa a acompanhar a largura da tela, então a página escala inteira e mantém
@@ -33,13 +29,21 @@ html {
     font-size: clamp(16px, 1vw, 48px);
   }
 }
-/* No modo TV o quadro tem 100rem x 56.25rem (16:9). 1rem = o menor entre
-   1% da largura e 1/56.25 da altura, então ele sempre cabe inteiro na tela. */
+/* Celular: a rolagem "encaixa" card por card */
+@media (max-width: 639px) {
+  html {
+    scroll-snap-type: y proximity;
+  }
+}
+/* TV: o quadro tem 100rem x 56.25rem (16:9). 1rem = o menor entre 1% da
+   largura e 1/56.25 da altura, então ele sempre cabe inteiro na tela. */
 html.tv {
   font-size: min(1vw, 1.7778vh);
+  scroll-snap-type: none;
 }
 html.tv body {
   overflow: hidden;
+  cursor: none;
 }
 
 body {
@@ -55,10 +59,4 @@ body {
     width: min(100% - 2.5rem, 89rem);
     margin-inline: auto;
   }
-}
-
-/* Na TV, sem cursor */
-html.tv,
-html.tv body {
-  cursor: none;
 }
