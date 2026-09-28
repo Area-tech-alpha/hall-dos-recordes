@@ -1,7 +1,6 @@
 import { Header } from "@/components/Header";
 import { HolderStrip } from "@/components/HolderStrip";
 import { RecordCard } from "@/components/RecordCard";
-import { TvMode } from "@/components/TvMode";
 import { getHallData } from "@/lib/hall";
 
 export default async function Page() {
@@ -27,15 +26,15 @@ export default async function Page() {
 
         <section
           aria-label="Recordes"
-          className="grid grid-cols-1 gap-5 pb-16 sm:grid-cols-2 lg:grid-cols-3 tv:min-h-0 tv:flex-1 tv:grid-cols-7 tv:grid-rows-3 tv:gap-4 tv:pb-0"
+          // TV: sempre 3 linhas; as colunas acompanham a quantidade de recordes (19 → 7 colunas)
+          style={{ "--tv-cols": Math.ceil(recordes.length / 3) } as React.CSSProperties}
+          className="grid grid-cols-1 gap-5 pb-16 sm:grid-cols-2 lg:grid-cols-3 tv:min-h-0 tv:flex-1 tv:grid-cols-[repeat(var(--tv-cols),minmax(0,1fr))] tv:grid-rows-3 tv:gap-4 tv:pb-0"
         >
           {recordes.map((r) => (
             <RecordCard key={r.id} recorde={r} recordistas={recordistas} />
           ))}
         </section>
       </main>
-
-      <TvMode />
     </>
   );
 }
