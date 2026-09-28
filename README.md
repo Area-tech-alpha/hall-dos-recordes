@@ -49,11 +49,15 @@ resolução (1920×1080).
     Acima de 1600px tudo escala com a tela.
   - Celular (até 640px): 1 card por linha, e a rolagem encaixa card a card. Os recordistas ficam numa faixa
     que arrasta para o lado.
-- **`/tv`: TV 55"** (ex.: `https://…vercel.app/tv`). Quadro 16:9 fixo, sem rolagem e sem cursor, em 1080p e 4K.
-  No topo, o título e os recordistas. Embaixo, um carrossel automático com 3 cards visíveis que avança 1 card
-  a cada 5s e volta ao início sem pulo. Os cards são os mesmos do computador, maiores e com descrição.
-  Funciona com qualquer quantidade de recordes; com 3 ou menos, os cards ficam parados.
+- **`/tv`: TV 55"** (ex.: `https://…vercel.app/tv`). Quadro 16:9 fixo, sem rolagem e sem cursor, em 1080p e 4K,
+  com a mesma estrutura do computador: no topo, o logo, o título e os recordistas numa linha. Embaixo, um
+  carrossel com 3 cards (iguais aos do computador) que avança 1 card a cada 5s, em loop e sem pulo, com bolinhas
+  indicando a posição. Funciona com qualquer quantidade de recordes; com 3 ou menos, os cards ficam parados.
   Com "reduzir movimento" ativado no sistema, a troca acontece sem animação.
+
+## Logo
+
+`public/logo-alpha.png` (720×205, fundo transparente). Aparece no header de `/`, do celular e da `/tv`.
 
 ## Fase 2
 
