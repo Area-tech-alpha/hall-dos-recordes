@@ -39,14 +39,17 @@ Substitua o arquivo **mantendo o mesmo nome** (ex.: `public/images/italo-silva.j
 Para um arquivo novo, coloque em `public/images/` e aponte o caminho `/images/nome.jpg` em `foto` ou `imagem`.
 Prefira fotos quadradas ou 16:11 de ~1000px; o `next/image` gera versões otimizadas.
 
-## TV 55"
+## Layouts: celular, computador e TV
 
-- Em telas a partir de 1600×800 (TV 55" em 1080p/4K ou monitor em tela cheia) a página vira um quadro 16:9 fixo,
-  sem rolagem: 19 recordes em grade 7×3 e recordistas no topo. Tudo escala com a tela.
-- **Na TV, abra sempre com `?tv`** (ex.: `https://…vercel.app/?tv`). Isso força o quadro de TV e esconde o cursor.
-  Navegadores de smart TV costumam informar uma tela de 1280×720 ou 960×540 mesmo em TVs 4K, e sem o `?tv`
-  a página cairia no layout de notebook, com rolagem.
-- A grade tem sempre 3 linhas; as colunas se ajustam sozinhas à quantidade de recordes (19 → 7 colunas).
+- **Celular** (até 640px): um card por linha, rolando com o dedo.
+- **Computador**: grade de 2 a 4 colunas, rolando (4 colunas a partir de 1920px). Acima de 1600px tudo escala com a tela.
+- **TV 55"**: quadro 16:9 fixo, sem rolagem. Recordistas no topo e todos os recordes em 3 linhas; as colunas
+  se ajustam sozinhas à quantidade de recordes (19 → 7 colunas). Sem cursor.
+
+O modo TV **não** depende do tamanho da tela (senão um monitor Full HD cairia nele). Ele liga:
+- sozinho, em navegador de smart TV (Samsung/Tizen, LG/webOS, Android TV, Fire TV, Roku…);
+- ou com `?tv` na URL (ex.: `https://…vercel.app/?tv`). Use isso quando a TV estiver ligada num
+  computador, TV box ou Chromecast. `?tv=0` desliga.
 
 ## Fase 2
 

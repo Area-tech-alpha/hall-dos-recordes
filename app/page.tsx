@@ -28,7 +28,7 @@ export default async function Page() {
           aria-label="Recordes"
           // TV: sempre 3 linhas; as colunas acompanham a quantidade de recordes (19 → 7 colunas)
           style={{ "--tv-cols": Math.ceil(recordes.length / 3) } as React.CSSProperties}
-          className="grid grid-cols-1 gap-5 pb-16 sm:grid-cols-2 lg:grid-cols-3 tv:min-h-0 tv:flex-1 tv:grid-cols-[repeat(var(--tv-cols),minmax(0,1fr))] tv:grid-rows-3 tv:gap-4 tv:pb-0"
+          className="grid grid-cols-1 gap-5 pb-16 sm:grid-cols-2 lg:grid-cols-3 min-[120rem]:grid-cols-4 tv:min-h-0 tv:flex-1 tv:grid-cols-[repeat(var(--tv-cols),minmax(0,1fr))] tv:grid-rows-3 tv:gap-4 tv:pb-0"
         >
           {recordes.map((r) => (
             <RecordCard key={r.id} recorde={r} recordistas={recordistas} />

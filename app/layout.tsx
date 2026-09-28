@@ -11,8 +11,13 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = { themeColor: "#0e0b07" };
 
-// ?tv na URL força o modo TV. Roda antes da pintura para não piscar o layout de notebook.
-const TV_SCRIPT = `if (new URLSearchParams(location.search).has("tv")) document.documentElement.classList.add("tv");`;
+// Liga o layout de TV em navegador de smart TV, ou com ?tv na URL (?tv=0 desliga).
+// Roda antes da pintura para não piscar o layout de computador.
+const TV_SCRIPT = `(function () {
+  var tv = new URLSearchParams(location.search).get("tv");
+  var smartTv = /SmartTV|SMART-TV|Tizen|Web0S|webOS|NetCast|HbbTV|BRAVIA|Android TV|GoogleTV|AFT[A-Z]|CrKey|Roku|VIDAA/i.test(navigator.userAgent);
+  if (tv === null ? smartTv : tv !== "0") document.documentElement.classList.add("tv");
+})();`;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
