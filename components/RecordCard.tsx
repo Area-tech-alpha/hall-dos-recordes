@@ -12,7 +12,7 @@ const COVER_GRID: Record<number, string> = {
 // Largura de cada foto da capa: largura do card (4/3/2/1 colunas) dividida pelas colunas da capa.
 const coverSizes = (cols: number) =>
   [
-    `(min-width: 1600px) and (min-height: 800px) ${Math.ceil(15 / cols)}vw`,
+    `(min-width: 1920px) ${Math.ceil(25 / cols)}vw`,
     `(min-width: 1024px) ${Math.ceil(34 / cols)}vw`,
     `(min-width: 640px) ${Math.ceil(50 / cols)}vw`,
     `${Math.ceil(100 / cols)}vw`,
