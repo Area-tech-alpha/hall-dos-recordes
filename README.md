@@ -50,8 +50,10 @@ resolução (1920×1080).
   - Celular (até 640px): 1 card por linha, e a rolagem encaixa card a card. Os recordistas ficam numa faixa
     que arrasta para o lado.
 - **`/tv`: TV 55"** (ex.: `https://…vercel.app/tv`). Quadro 16:9 fixo, sem rolagem e sem cursor, em 1080p e 4K.
-  Grade 7×3, que comporta até 21 recordes. Acima disso as colunas aumentam sozinhas (sempre 3 linhas),
-  mas os cards ficam mais estreitos.
+  No topo, o título e os recordistas. Embaixo, um carrossel automático com 3 cards visíveis que avança 1 card
+  a cada 5s e volta ao início sem pulo. Os cards são os mesmos do computador, maiores e com descrição.
+  Funciona com qualquer quantidade de recordes; com 3 ou menos, os cards ficam parados.
+  Com "reduzir movimento" ativado no sistema, a troca acontece sem animação.
 
 ## Fase 2
 

@@ -1,9 +1,10 @@
 import { Header } from "@/components/Header";
 import { HolderStrip } from "@/components/HolderStrip";
 import { RecordCard } from "@/components/RecordCard";
+import { TvCarousel } from "@/components/TvCarousel";
 import { getHallData } from "@/lib/hall";
 
-/** Mesmo conteúdo para as duas rotas: "/" (computador e celular) e "/tv" (TV 16:9 sem rolagem). */
+/** Mesmo conteúdo para as duas rotas: "/" (computador e celular) e "/tv" (TV 16:9 sem rolagem, recordes em carrossel). */
 export async function Hall({ tv = false }: { tv?: boolean }) {
   const { recordes, recordistas } = await getHallData();
 
@@ -25,16 +26,18 @@ export async function Hall({ tv = false }: { tv?: boolean }) {
           <HolderStrip recordistas={recordistas} />
         </section>
 
-        <section
-          aria-label="Recordes"
-          // TV: sempre 3 linhas; as colunas acompanham a quantidade de recordes (19 → 7 colunas)
-          style={{ "--tv-cols": Math.ceil(recordes.length / 3) } as React.CSSProperties}
-          className="grid grid-cols-1 gap-5 pb-16 sm:grid-cols-2 lg:grid-cols-3 min-[120rem]:grid-cols-4 tv:min-h-0 tv:flex-1 tv:grid-cols-[repeat(var(--tv-cols),minmax(0,1fr))] tv:grid-rows-3 tv:gap-4 tv:pb-0"
-        >
-          {recordes.map((r) => (
-            <RecordCard key={r.id} recorde={r} recordistas={recordistas} tv={tv} />
-          ))}
-        </section>
+        {tv ? (
+          <TvCarousel recordes={recordes} recordistas={recordistas} />
+        ) : (
+          <section
+            aria-label="Recordes"
+            className="grid grid-cols-1 gap-5 pb-16 sm:grid-cols-2 lg:grid-cols-3 min-[120rem]:grid-cols-4"
+          >
+            {recordes.map((r) => (
+              <RecordCard key={r.id} recorde={r} recordistas={recordistas} />
+            ))}
+          </section>
+        )}
       </main>
     </>
   );
