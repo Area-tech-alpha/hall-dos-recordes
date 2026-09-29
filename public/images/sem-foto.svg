@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" role="img" aria-label="Sem foto">
+  <defs>
+    <radialGradient id="fundo" cx="50%" cy="38%" r="70%">
+      <stop offset="0" stop-color="#1f1a12"/>
+      <stop offset="1" stop-color="#0e0b07"/>
+    </radialGradient>
+  </defs>
+  <rect width="400" height="400" fill="url(#fundo)"/>
+  <g fill="#a69d8f" fill-opacity="0.38">
+    <circle cx="200" cy="158" r="68"/>
+    <path d="M72 400c0-78 57-138 128-138s128 60 128 138z"/>
+  </g>
+</svg>
