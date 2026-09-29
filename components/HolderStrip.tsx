@@ -16,7 +16,7 @@ export function HolderStrip({ recordistas }: { recordistas: Recordista[] }) {
               </span>
             )}
           </div>
-          <span className="mt-3 text-[0.85rem] leading-tight font-semibold sm:text-[0.95rem] tv:mt-2 tv:text-[0.85rem] tv:whitespace-nowrap">{p.nome}</span>
+          <span className="mt-3 line-clamp-2 w-full text-[0.85rem] leading-tight font-semibold [overflow-wrap:anywhere] sm:text-[0.95rem] tv:mt-2 tv:line-clamp-1 tv:text-[0.85rem]">{p.nome}</span>
           <span className="mt-1 text-[0.8rem] text-muted tv:mt-0.5 tv:text-[0.72rem]">{p.cargo}</span>
         </li>
       ))}

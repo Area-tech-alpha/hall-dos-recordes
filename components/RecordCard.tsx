@@ -70,11 +70,11 @@ export function RecordCard({
 
       <div className="relative z-10 -mt-14 flex flex-1 flex-col px-[1.4rem] pb-[1.6rem] tv:flex-none">
         {/* cqi: o valor acompanha a largura do card (3 ou 4 colunas, TV ou notebook) */}
-        <p className="text-[clamp(2.25rem,12.5cqi,4.5rem)] leading-[1.05] font-bold tracking-tight text-gold [text-shadow:0_0.2rem_1.2rem_rgb(0_0_0/0.55)]">
+        <p className="overflow-hidden text-[clamp(2.25rem,12.5cqi,4.5rem)] leading-[1.05] font-bold tracking-tight text-ellipsis whitespace-nowrap text-gold [text-shadow:0_0.2rem_1.2rem_rgb(0_0_0/0.55)]">
           {recorde.valor}
         </p>
-        <h3 className="mt-2 text-[1.35rem] leading-tight font-bold">{recorde.titulo}</h3>
-        <p className="mt-2.5 text-[0.95rem] text-muted">{recorde.descricao}</p>
+        <h3 className="mt-2 line-clamp-2 text-[1.35rem] leading-tight font-bold">{recorde.titulo}</h3>
+        <p className="mt-2.5 line-clamp-2 text-[0.95rem] text-muted">{recorde.descricao}</p>
         <ul className="mt-4 flex flex-wrap gap-2">
           {pessoas.map((p) => (
             <li
