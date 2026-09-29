@@ -37,6 +37,7 @@ login nem edição: ela só consome a API pública do ERP.
     ],
     "records": [   // só publicados, na ordem do ERP
       { "id": "r1", "value": "09,01%", "title": "Menor no-show do mês", "description": "…",   // description pode ser null
+        "coverUrl": "/public/hall-of-fame/records/r1/cover?v=2",   // capa opcional (ou null)
         "members": [ { "id": "m1", "name": "Italo Silva", "track": "SDR", "photoUrl": "…" } ] }
     ]
   }
@@ -50,7 +51,11 @@ Como vira o card:
   cargo atual do membro. O cargo mostrado na faixa de recordistas é o `track` atual do membro.
 - **Foto:** `photoUrl` é relativo à base da API e responde 302 para uma URL assinada do S3; o `next/image` segue o
   redirecionamento. Membro sem foto aparece com `/images/sem-foto.svg`.
-- Recorde sem membros é descartado (com aviso no log). Não há imagem de capa: o card usa as fotos dos participantes.
+- **Capa:** `coverUrl` (relativo à base da API, como a foto). Sem capa, o card usa as fotos dos participantes; com
+  mais de 4 participantes, só os 4 primeiros entram na capa, e as tags mostram todos.
+- **Textos fora do padrão** são cortados com "…" e o corte vai para o log: valor 14, título 60, descrição 110 e
+  nome 22 caracteres. No card, título e descrição param em 2 linhas e o valor fica numa linha só.
+- Recorde sem membros é descartado (com aviso no log).
 
 ### Atualização na hora (opcional)
 

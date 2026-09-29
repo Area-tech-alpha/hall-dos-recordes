@@ -1,7 +1,7 @@
 // Teste da conversão do contrato do ERP (GET /public/hall-of-fame) para o formato da LP.
 // Rodar: node scripts/test-hall-erp.mjs   (Node 22.18+ / 24: importa o .ts direto)
 import assert from "node:assert/strict";
-import { converterHallErp, SEM_FOTO } from "../lib/hall-erp.ts";
+import { converterHallErp, LIMITES, limitar, SEM_FOTO } from "../lib/hall-erp.ts";
 
 const BASE = "https://api.erp.assessorialpha.com";
 const foto = (id) => `/public/hall-of-fame/members/${id}/photo?v=1`;
@@ -99,4 +99,26 @@ assert.equal(inv.ok, false);
 assert.match(inv.erro, /fora do formato/);
 assert.equal(converterHallErp(null, BASE).ok, false);
 
-console.log("OK: conversão do contrato do ERP (1, 2 e 4 participantes, área por recorde, sem foto, descartes, envelope)");
+// Capa (coverUrl) e textos fora do padrão
+const longo = structuredClone(exemplo);
+const rec = longo.data.records[2]; // r-3, 4 participantes
+rec.coverUrl = "/public/hall-of-fame/records/r-3/cover?v=2";
+rec.value = "R$ 1.234.567.890,00";
+rec.title = "T".repeat(99);
+rec.description = "D".repeat(199);
+rec.members.push({ id: "m-extra", name: "Maria Eduarda Albuquerque Neto", track: "CLOSER", photoUrl: null }); // 5º, nome de 30
+const rl = converterHallErp(longo, BASE);
+assert.equal(rl.ok, true);
+const r3l = rl.recordes.find((x) => x.id === "r-3");
+assert.equal(r3l.imagem, `${BASE}/public/hall-of-fame/records/r-3/cover?v=2`);
+assert.equal(rl.recordes.find((x) => x.id === "r-1").imagem, undefined);
+assert.equal(r3l.coRecordistas.length, 4); // 5 participantes: tags mostram todos (a capa usa os 4 primeiros)
+assert.equal(r3l.valor, "R$ 1.234.567…"); // sem ponto solto antes do "…"
+assert.equal(Array.from(r3l.titulo).length, LIMITES.titulo);
+assert.equal(Array.from(r3l.descricao).length, LIMITES.descricao);
+assert.equal(rl.recordistas.find((p) => p.id === "m-extra").nome, "Maria Eduarda Albuque…");
+assert.equal(rl.avisos.filter((a) => a.includes("cortado")).length, 4); // valor, título, descrição e nome
+assert.equal(limitar("curto", 14), "curto");
+assert.equal(limitar("😀".repeat(20), 5), "😀😀😀😀…"); // não parte emoji
+
+console.log("OK: conversão do contrato do ERP (1, 2, 4 e 5 participantes, área por recorde, sem foto, capa, limites de texto, descartes, envelope)");
