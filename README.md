@@ -66,15 +66,37 @@ curl -X POST https://recordes.assessorialpha.com/api/revalidate   -H "x-revalida
 # 200 {"ok":true} · sem o secret certo: 401
 ```
 
+As telas abertas (`/` e `/tv`) se atualizam sozinhas, sem recarregar a página (`components/AutoAtualizar.tsx`):
+
+- **SSE do ERP** (`NEXT_PUBLIC_ERP_EVENTS_URL`): a cada evento `hall-updated`, busca os dados de novo (debounce de 1s).
+  Se a conexão cair, o navegador reconecta sozinho (e, se o ERP responder erro, a LP reabre em 30s).
+- **Intervalo de reserva**: a cada 2 min com o SSE conectado; a cada 30s sem ele (ou sem a variável).
+- **Aba em segundo plano**: fecha o SSE e para o intervalo; ao voltar, atualiza na hora e reabre.
+
+O que a LP espera do ERP em `GET /public/hall-of-fame/events`:
+
+```text
+Content-Type: text/event-stream
+Access-Control-Allow-Origin: https://recordes.assessorialpha.com   (o domínio da LP em CORS_ORIGINS)
+
+event: hall-updated
+data: {}
+```
+
+Mande o `hall-updated` **depois** que o `POST /api/revalidate` responder: se o evento chegar antes, a LP busca de
+novo e ainda recebe a versão em cache (a mudança só aparece no próximo intervalo).
+
 ## Variáveis (Vercel > Settings > Environment Variables)
 
 | Variável | Para quê |
 | --- | --- |
 | `ERP_API_URL` | Base da API do ERP, sem barra no final (ex.: `https://api.erp.assessorialpha.com`). Sem ela, a LP usa os recordes locais. |
 | `ERP_IMAGES_HOST` | Host do S3 para onde as fotos redirecionam (ex.: `nome-do-bucket.s3.amazonaws.com` ou `*.s3.amazonaws.com`). |
+| `NEXT_PUBLIC_ERP_EVENTS_URL` | Opcional. SSE do ERP que avisa quando o Hall muda: `ERP_API_URL` + `/public/hall-of-fame/events`. Sem ela, as telas só se atualizam pelo intervalo de 30s. |
 | `HALL_REVALIDATE_SECRET` | Opcional. Secret que o ERP mandaria em `POST /api/revalidate`. Gere com `openssl rand -base64 32`. |
 
-As duas primeiras são lidas também no build (liberam as imagens em `next.config.mjs`): depois de mudar, faça um
+As duas primeiras são lidas também no build (liberam as imagens em `next.config.mjs`), e a
+`NEXT_PUBLIC_ERP_EVENTS_URL` entra no JavaScript do navegador no build: depois de mudar qualquer uma, faça um
 novo deploy. Localmente, copie `.env.example` para `.env`.
 
 ## Rodar
