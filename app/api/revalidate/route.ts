@@ -1,5 +1,5 @@
 import { timingSafeEqual } from "node:crypto";
-import { revalidateTag } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
 import { HALL_TAG } from "@/lib/hall";
 
@@ -23,5 +23,8 @@ export async function POST(request: Request) {
   }
   // expire: 0 → nada de conteúdo antigo depois da chamada; a próxima requisição já busca no ERP
   revalidateTag(HALL_TAG, { expire: 0 });
+  // Também as páginas renderizadas, para / e /tv não servirem HTML antigo
+  revalidatePath("/");
+  revalidatePath("/tv");
   return NextResponse.json({ ok: true, revalidado: HALL_TAG });
 }
